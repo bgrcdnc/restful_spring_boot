@@ -5,6 +5,7 @@ import com.bugracdnc.restmvc.models.BeerStyle;
 import com.bugracdnc.restmvc.services.BeerService;
 import com.bugracdnc.restmvc.services.BeerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Slf4j
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
 
@@ -68,6 +70,8 @@ class BeerControllerTest {
                                                       .contentType(MediaType.APPLICATION_JSON)
                                                       .content(objectMapper.writeValueAsString(beerDTO)))
                                      .andExpect(status().isBadRequest()).andReturn();
+
+        log.debug(mvcResult.getResponse().getContentAsString());
     }
 
     @Test
