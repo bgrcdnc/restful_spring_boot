@@ -21,27 +21,24 @@ public class BeerController {
     public static final String BEER_ID_PATH = BEER_PATH + "/{beerId}";
     private final BeerService beerService;
 
-    @Validated
     @PatchMapping(BEER_ID_PATH)
-    public ResponseEntity<HttpStatus> patchById(@NotNull @NotBlank @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beerDTO) {
+    public ResponseEntity<HttpStatus> patchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beerDTO) {
         if(beerService.patchBeerById(beerId, beerDTO).isEmpty()) {
             throw new NotFoundException();
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-	
-    @Validated
+
     @DeleteMapping(BEER_ID_PATH)
-    public ResponseEntity<HttpStatus> deleteById(@NotNull @NotBlank @PathVariable("beerId") UUID beerId) {
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable("beerId") UUID beerId) {
         if(beerService.deleteBeerById(beerId)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         throw new NotFoundException();
     }
 
-    @Validated
     @PutMapping(BEER_ID_PATH)
-    public ResponseEntity<HttpStatus> updateById(@NotNull @NotBlank @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beerDTO) {
+    public ResponseEntity<HttpStatus> updateById(@PathVariable("beerId") UUID beerId, @Validated @RequestBody BeerDTO beerDTO) {
         if(beerService.updateBeerById(beerId, beerDTO).isEmpty()) {
             throw new NotFoundException();
         }
@@ -62,9 +59,8 @@ public class BeerController {
         return beerService.listBeers();
     }
 
-    @Validated
     @GetMapping(BEER_ID_PATH)
-    public BeerDTO getBeerById(@NotNull @NotBlank @PathVariable UUID beerId) {
+    public BeerDTO getBeerById(@PathVariable UUID beerId) {
         return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 }
