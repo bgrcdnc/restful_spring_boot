@@ -2,6 +2,7 @@ package com.bugracdnc.restmvc.models;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,13 +18,15 @@ public class BeerDTO {
 
     @NotBlank
     @NotNull
+    @Size(max = 50)
     private String beerName;
-    
+
     @NotNull
     private BeerStyle beerStyle;
 
     @NotNull
     @NotBlank
+    @Size(max = 255)
     private String upc;
 
     private Integer quantityOnHand;
