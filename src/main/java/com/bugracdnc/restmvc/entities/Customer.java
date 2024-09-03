@@ -31,7 +31,6 @@ public class Customer {
     @NotBlank
     private String customerName;
 
-    @Column(length = 255)
     private String email;
 
     private LocalDateTime createdDate;
