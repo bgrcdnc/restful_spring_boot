@@ -2,6 +2,7 @@ package com.bugracdnc.restmvc.bootstrap;
 
 import com.bugracdnc.restmvc.repos.BeerRepo;
 import com.bugracdnc.restmvc.repos.CustomerRepo;
+import com.bugracdnc.restmvc.services.BeerCsvService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,14 @@ class BootstrapDataTest {
     @Autowired
     CustomerRepo customerRepo;
 
+    @Autowired
+    BeerCsvService beerCsvService;
+
     BootstrapData bootstrapData;
 
     @BeforeEach
     void setUp() {
-        bootstrapData = new BootstrapData(beerRepo, customerRepo);
+        bootstrapData = new BootstrapData(beerRepo, customerRepo, beerCsvService);
     }
 
     @Test
