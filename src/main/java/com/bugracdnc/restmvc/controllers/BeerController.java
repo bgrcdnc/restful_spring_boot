@@ -54,13 +54,13 @@ public class BeerController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @GetMapping(BEER_PATH)
-    public List<BeerDTO> listBeers() {
-        return beerService.listBeers();
-    }
-
     @GetMapping(BEER_ID_PATH)
     public BeerDTO getBeerById(@PathVariable UUID beerId) {
         return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
+    }
+
+    @GetMapping(BEER_PATH)
+    public List<BeerDTO> listBeers() {
+        return beerService.listBeers();
     }
 }
