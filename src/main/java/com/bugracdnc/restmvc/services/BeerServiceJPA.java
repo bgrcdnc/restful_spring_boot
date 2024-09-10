@@ -1,5 +1,6 @@
 package com.bugracdnc.restmvc.services;
 
+import com.bugracdnc.restmvc.entities.Beer;
 import com.bugracdnc.restmvc.mappers.BeerMapper;
 import com.bugracdnc.restmvc.models.BeerDTO;
 import com.bugracdnc.restmvc.repos.BeerRepo;
@@ -24,11 +25,23 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> listBeers() {
-        return beerRepo.findAll()
-                       .stream()
+    public List<BeerDTO> listBeers(String beerName) {
+
+        List<Beer> beerList;
+
+        if(StringUtils.hasText(beerName)) {
+            beerList = listBeersByName(beerName);
+        } else {
+            beerList = beerRepo.findAll();
+        }
+
+        return beerList.stream()
                        .map(beerMapper::beerToBeerDto)
                        .collect(Collectors.toList());
+    }
+
+    public List<Beer> listBeersByName(String beerName) {
+        return beerRepo.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
     }
 
     @Override
@@ -52,9 +65,7 @@ public class BeerServiceJPA implements BeerService {
             foundBeer.setUpc(beerDTO.getUpc());
             foundBeer.setPrice(beerDTO.getPrice());
             atomicReference.set(Optional.of(beerMapper.beerToBeerDto(beerRepo.save(foundBeer))));
-        }, () -> {
-            atomicReference.set(Optional.empty());
-        });
+        }, () -> atomicReference.set(Optional.empty()));
 
         return atomicReference.get();
     }
