@@ -101,7 +101,7 @@ public class BeerServiceJPA implements BeerService {
     public Optional<BeerDTO> patchBeerById(UUID beerId, BeerDTO beerDTO) {
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
-        if(beerRepo.existsById(beerId)) {
+        if(beerRepo.findById(beerId).isPresent()) {
             BeerDTO existing = beerMapper.beerToBeerDto(beerRepo.findById(beerId).get());
             if(StringUtils.hasText(beerDTO.getBeerName())) {existing.setBeerName(beerDTO.getBeerName());}
             if(beerDTO.getPrice() != null) {existing.setPrice(beerDTO.getPrice());}
