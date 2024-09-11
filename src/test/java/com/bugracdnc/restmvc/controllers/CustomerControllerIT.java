@@ -114,6 +114,7 @@ class CustomerControllerIT {
 
         ResponseEntity<HttpStatus> responseEntity = customerController.handlePost(customerDTO);
 
+        @SuppressWarnings("null")
         String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
         UUID savedUUID = UUID.fromString(locationUUID[4]);
         Customer customer = customerRepo.findById(savedUUID).get();
@@ -126,7 +127,7 @@ class CustomerControllerIT {
     @Test
     void testCustomerIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            CustomerDTO customerDTO = customerController.getCustomerById(UUID.randomUUID());
+            customerController.getCustomerById(UUID.randomUUID());
         });
     }
 

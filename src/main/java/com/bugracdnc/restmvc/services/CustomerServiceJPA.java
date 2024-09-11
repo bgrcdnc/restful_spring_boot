@@ -5,7 +5,6 @@ import com.bugracdnc.restmvc.models.CustomerDTO;
 import com.bugracdnc.restmvc.repos.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 public class CustomerServiceJPA implements CustomerService {
     private final CustomerRepo customerRepo;
     private final CustomerMapper customerMapper;
-    private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Override
     public List<CustomerDTO> listCustomers() {
@@ -40,7 +38,8 @@ public class CustomerServiceJPA implements CustomerService {
 
     @Override
     public CustomerDTO saveNewCustomer(CustomerDTO customerDTO) {
-        return customerMapper.customerToCustomerDTO(customerRepo.save(customerMapper.customerDtoToCustomer(customerDTO)));
+        return customerMapper
+                .customerToCustomerDTO(customerRepo.save(customerMapper.customerDtoToCustomer(customerDTO)));
     }
 
     @Override
@@ -77,9 +76,14 @@ public class CustomerServiceJPA implements CustomerService {
             if(StringUtils.hasText(customerDTO.getCustomerName())) {
                 existing.setCustomerName(customerDTO.getCustomerName());
             }
-            if(customerDTO.getCreatedDate() != null) {existing.setCreatedDate(customerDTO.getCreatedDate());}
-            atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepo.save(customerMapper.customerDtoToCustomer(existing)))));
-        } else {atomicReference.set(Optional.empty());}
+            if(customerDTO.getCreatedDate() != null) {
+                existing.setCreatedDate(customerDTO.getCreatedDate());
+            }
+            atomicReference.set(Optional.of(customerMapper
+                                                    .customerToCustomerDTO(customerRepo.save(customerMapper.customerDtoToCustomer(existing)))));
+        } else {
+            atomicReference.set(Optional.empty());
+        }
         return atomicReference.get();
     }
 }
