@@ -2,6 +2,8 @@ package com.bugracdnc.restmvc.services;
 
 import com.bugracdnc.restmvc.models.BeerDTO;
 import com.bugracdnc.restmvc.models.BeerStyle;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -29,8 +31,8 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInv) {
-        return new ArrayList<>(beerMap.values());
+    public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInv, Integer pageNumber, Integer pageSize) {
+        return new PageImpl<>(new ArrayList<>(beerMap.values()));
     }
 
     @Override
