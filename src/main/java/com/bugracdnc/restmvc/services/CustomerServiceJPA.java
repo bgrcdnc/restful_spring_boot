@@ -51,9 +51,9 @@ public class CustomerServiceJPA implements CustomerService {
             customer.setCreatedDate(customerDTO.getCreatedDate());
             customer.setLastModifiedDate(LocalDateTime.now());
             atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(customerRepo.save(customer))));
-        }, () -> {
-            atomicReference.set(Optional.empty());
-        });
+                                                          }, () ->
+                                                                  atomicReference.set(Optional.empty())
+                                                         );
 
         return atomicReference.get();
     }
@@ -67,11 +67,12 @@ public class CustomerServiceJPA implements CustomerService {
         return false;
     }
 
+
     @Override
     public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customerDTO) {
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
 
-        if(customerRepo.existsById(customerId)) {
+        if(customerRepo.findById(customerId).isPresent()) {
             CustomerDTO existing = customerMapper.customerToCustomerDTO(customerRepo.findById(customerId).get());
             if(StringUtils.hasText(customerDTO.getCustomerName())) {
                 existing.setCustomerName(customerDTO.getCustomerName());

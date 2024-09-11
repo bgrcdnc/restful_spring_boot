@@ -14,6 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,9 +33,9 @@ class CustomerControllerIT {
 
     @Test
     void testPatchNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.patchById(UUID.randomUUID(), CustomerDTO.builder().build());
-        });
+        assertThrows(NotFoundException.class, () ->
+                             customerController.patchById(UUID.randomUUID(), CustomerDTO.builder().build())
+                    );
     }
 
     @Rollback
@@ -50,7 +51,10 @@ class CustomerControllerIT {
 
         ResponseEntity<HttpStatus> responseEntity = customerController.patchById(customer.getId(), customerDTO);
 
-        Customer patchedCustomer = customerRepo.findById(customer.getId()).get();
+        Customer patchedCustomer = null;
+        if(customerRepo.findById(customer.getId()).isPresent()) {
+            patchedCustomer = customerRepo.findById(customer.getId()).get();
+        }
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
         assertThat(patchedCustomer).isNotNull();
@@ -59,9 +63,9 @@ class CustomerControllerIT {
 
     @Test
     void testDeleteNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.deleteById(UUID.randomUUID());
-        });
+        assertThrows(NotFoundException.class, () ->
+                             customerController.deleteById(UUID.randomUUID())
+                    );
     }
 
     @Rollback
@@ -80,9 +84,9 @@ class CustomerControllerIT {
 
     @Test
     void testUpdateNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.updateById(UUID.randomUUID(), CustomerDTO.builder().build());
-        });
+        assertThrows(NotFoundException.class, () ->
+                             customerController.updateById(UUID.randomUUID(), CustomerDTO.builder().build())
+                    );
     }
 
     @Rollback
@@ -97,7 +101,10 @@ class CustomerControllerIT {
         customerDTO.setCustomerName(customerName);
 
         ResponseEntity<HttpStatus> responseEntity = customerController.updateById(customer.getId(), customerDTO);
-        Customer updatedCustomer = customerRepo.findById(customer.getId()).get();
+        Customer updatedCustomer = null;
+        if(customerRepo.findById(customer.getId()).isPresent()) {
+            updatedCustomer = customerRepo.findById(customer.getId()).get();
+        }
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
         assertThat(updatedCustomer).isNotNull();
@@ -115,9 +122,12 @@ class CustomerControllerIT {
         ResponseEntity<HttpStatus> responseEntity = customerController.handlePost(customerDTO);
 
         @SuppressWarnings("null")
-        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
+        String[] locationUUID = Objects.requireNonNull(responseEntity.getHeaders().getLocation()).getPath().split("/");
         UUID savedUUID = UUID.fromString(locationUUID[4]);
-        Customer customer = customerRepo.findById(savedUUID).get();
+        Customer customer = null;
+        if(customerRepo.findById(savedUUID).isPresent()) {
+            customer = customerRepo.findById(savedUUID).get();
+        }
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
         assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
@@ -126,9 +136,9 @@ class CustomerControllerIT {
 
     @Test
     void testCustomerIdNotFound() {
-        assertThrows(NotFoundException.class, () -> {
-            customerController.getCustomerById(UUID.randomUUID());
-        });
+        assertThrows(NotFoundException.class, () ->
+                             customerController.getCustomerById(UUID.randomUUID())
+                    );
     }
 
     @Test
